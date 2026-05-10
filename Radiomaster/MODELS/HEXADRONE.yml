@@ -8,17 +8,30 @@ header:
       val: 0
     1:
       val: 0
+timers:
+  0:
+    swtch: SD2
+    mode: ON
+    name: ""
+    minuteBeep: 0
+    countdownBeep: 0
+    start: 0
+    persistent: 1
+    countdownStart: 0
+    value: 0
+    showElapsed: 0
+    extraHaptic: 0
 noGlobalFunctions: 0
 thrTrim: 0
 trimInc: 0
-displayTrims: 2
+displayTrims: 0
 ignoreSensorIds: 0
 showInstanceIds: 0
 disableThrottleWarning: 0
 enableCustomThrottleWarning: 0
 customThrottleWarningPosition: 0
 beepANACenter: 0
-extendedLimits: 1
+extendedLimits: 0
 extendedTrims: 0
 throttleReversed: 0
 checklistInteractive: 0
@@ -175,25 +188,6 @@ mixData:
     offset: 0
     name: ""
   - destCh: 7
-    srcRaw: SD
-    weight: 100
-    swtch: NONE
-    curve:
-      type: 0
-      value: 0
-    delayPrec: 0
-    delayUp: 0
-    delayDown: 0
-    speedPrec: 0
-    speedUp: 0
-    speedDown: 0
-    carryTrim: 0
-    mltpx: ADD
-    mixWarn: 0
-    flightModes: 000000000
-    offset: 0
-    name: ""
-  - destCh: 8
     srcRaw: SE
     weight: 100
     swtch: NONE
@@ -212,26 +206,7 @@ mixData:
     flightModes: 000000000
     offset: 0
     name: ""
-  - destCh: 9
-    srcRaw: P1
-    weight: 100
-    swtch: NONE
-    curve:
-      type: 0
-      value: 0
-    delayPrec: 0
-    delayUp: 0
-    delayDown: 0
-    speedPrec: 0
-    speedUp: 0
-    speedDown: 0
-    carryTrim: 0
-    mltpx: ADD
-    mixWarn: 0
-    flightModes: 000000000
-    offset: 0
-    name: ""
-  - destCh: 10
+  - destCh: 8
     srcRaw: T4
     weight: 100
     swtch: NONE
@@ -250,7 +225,7 @@ mixData:
     flightModes: 000000000
     offset: 0
     name: ""
-  - destCh: 11
+  - destCh: 9
     srcRaw: T2
     weight: 100
     swtch: NONE
@@ -269,7 +244,7 @@ mixData:
     flightModes: 000000000
     offset: 0
     name: ""
-  - destCh: 12
+  - destCh: 10
     srcRaw: T3
     weight: 100
     swtch: NONE
@@ -288,7 +263,7 @@ mixData:
     flightModes: 000000000
     offset: 0
     name: ""
-  - destCh: 13
+  - destCh: 11
     srcRaw: T1
     weight: 100
     swtch: NONE
@@ -425,6 +400,104 @@ points:
     val: -1
   160:
     val: 1
+logicalSw:
+  0:
+    func: FUNC_VNEG
+    def: tele(10),204
+    delay: 50
+    duration: 0
+    andsw: "!L12"
+    lsPersist: 0
+    lsState: 0
+  1:
+    func: FUNC_VNEG
+    def: tele(10),198
+    delay: 20
+    duration: 0
+    andsw: "!L13"
+    lsPersist: 0
+    lsState: 0
+  2:
+    func: FUNC_VNEG
+    def: tele(10),180
+    delay: 5
+    duration: 0
+    andsw: L14
+    lsPersist: 0
+    lsState: 0
+  3:
+    func: FUNC_VPOS
+    def: tele(14),1500
+    delay: 5
+    duration: 0
+    andsw: "!L13"
+    lsPersist: 0
+    lsState: 0
+  11:
+    func: FUNC_VNEG
+    def: tele(10),198
+    delay: 0
+    duration: 0
+    andsw: NONE
+    lsPersist: 0
+    lsState: 0
+  12:
+    func: FUNC_VNEG
+    def: tele(10),180
+    delay: 0
+    duration: 0
+    andsw: NONE
+    lsPersist: 0
+    lsState: 0
+  13:
+    func: FUNC_VPOS
+    def: tele(10),60
+    delay: 0
+    duration: 0
+    andsw: NONE
+    lsPersist: 0
+    lsState: 0
+customFn:
+  0:
+    swtch: L1
+    func: PLAY_TRACK
+    def: "lowbat\x00\x00,1,30"
+  1:
+    swtch: L2
+    func: PLAY_TRACK
+    def: "disarm\x00\x00,1,30"
+  2:
+    swtch: L3
+    func: PLAY_TRACK
+    def: "danger\x00\x00,1,2"
+  3:
+    swtch: L4
+    func: PLAY_TRACK
+    def: "warnng\x00\x00,1,2"
+  4:
+    swtch: L2
+    func: HAPTIC
+    def: 1,1,30
+  5:
+    swtch: L3
+    func: HAPTIC
+    def: 3,1,2
+  6:
+    swtch: L4
+    func: HAPTIC
+    def: 2,1,2
+  19:
+    swtch: SD2
+    func: LOGS
+    def: 1,1
+  20:
+    swtch: SD0
+    func: RESET
+    def: All,1
+  21:
+    swtch: ON
+    func: VOLUME
+    def: P1,1
 swashR:
   type: TYPE_NONE
   value: 0
@@ -435,19 +508,38 @@ swashR:
   aileronWeight: 0
   elevatorWeight: 0
 thrTraceSrc: Thr
+switchWarning:
+  SA:
+    pos: up
+  SB:
+    pos: up
+  SC:
+    pos: mid
+  SD:
+    pos: up
 thrTrimSw: 0
-potsWarnMode: WARN_AUTO
-potsWarnEnabled: 0
+potsWarnMode: WARN_MANUAL
+potsWarnEnabled: 1
 jitterFilter: GLOBAL
-displayChecklist: 0
+displayChecklist: 1
 telemetryProtocol: 0
 screens:
   0:
     type: VALUES
     u:
       lines:
-        0: ~
-        1: ~
+        0:
+          sources:
+            0:
+              val: tele(10)
+            1:
+              val: tele(15)
+        1:
+          sources:
+            0:
+              val: tele(14)
+            1:
+              val: tele(12)
         2:
           sources:
             0:
@@ -532,7 +624,7 @@ telemetrySensors:
     prec: 0
     autoOffset: 0
     filter: 0
-    logs: 1
+    logs: 0
     persistent: 0
     onlyPositive: 0
     cfg:
@@ -589,7 +681,7 @@ telemetrySensors:
     prec: 0
     autoOffset: 0
     filter: 0
-    logs: 1
+    logs: 0
     persistent: 0
     onlyPositive: 0
     cfg:
@@ -608,7 +700,7 @@ telemetrySensors:
     prec: 0
     autoOffset: 0
     filter: 0
-    logs: 1
+    logs: 0
     persistent: 0
     onlyPositive: 0
     cfg:
@@ -646,7 +738,7 @@ telemetrySensors:
     prec: 0
     autoOffset: 0
     filter: 0
-    logs: 1
+    logs: 0
     persistent: 0
     onlyPositive: 0
     cfg:
@@ -665,7 +757,7 @@ telemetrySensors:
     prec: 0
     autoOffset: 0
     filter: 0
-    logs: 1
+    logs: 0
     persistent: 0
     onlyPositive: 0
     cfg:
@@ -684,6 +776,25 @@ telemetrySensors:
     prec: 0
     autoOffset: 0
     filter: 0
+    logs: 0
+    persistent: 0
+    onlyPositive: 0
+    cfg:
+      custom:
+        ratio: 0
+        offset: 0
+  10:
+    type: TYPE_CUSTOM
+    id1:
+      id: 8
+    subId: 0
+    id2:
+      instance: 0
+    label: RxBt
+    unit: 1
+    prec: 1
+    autoOffset: 0
+    filter: 0
     logs: 1
     persistent: 0
     onlyPositive: 0
@@ -691,6 +802,101 @@ telemetrySensors:
       custom:
         ratio: 0
         offset: 0
+  11:
+    type: TYPE_CUSTOM
+    id1:
+      id: 8
+    subId: 0
+    id2:
+      instance: 1
+    label: Curr
+    unit: 2
+    prec: 1
+    autoOffset: 0
+    filter: 0
+    logs: 0
+    persistent: 0
+    onlyPositive: 0
+    cfg:
+      custom:
+        ratio: 0
+        offset: 0
+  12:
+    type: TYPE_CUSTOM
+    id1:
+      id: 8
+    subId: 0
+    id2:
+      instance: 2
+    label: Capa
+    unit: 14
+    prec: 0
+    autoOffset: 0
+    filter: 0
+    logs: 1
+    persistent: 0
+    onlyPositive: 0
+    cfg:
+      custom:
+        ratio: 0
+        offset: 0
+  13:
+    type: TYPE_CUSTOM
+    id1:
+      id: 8
+    subId: 0
+    id2:
+      instance: 3
+    label: Bat
+    unit: 13
+    prec: 0
+    autoOffset: 0
+    filter: 0
+    logs: 0
+    persistent: 0
+    onlyPositive: 0
+    cfg:
+      custom:
+        ratio: 0
+        offset: 0
+  14:
+    type: TYPE_CALCULATED
+    id2:
+      formula: FORMULA_MULTIPLY
+    label: Watt
+    unit: 15
+    prec: 1
+    autoOffset: 0
+    filter: 0
+    logs: 1
+    persistent: 0
+    onlyPositive: 0
+    cfg:
+      calc:
+        sources:
+          0:
+            val: 11
+          1:
+            val: 12
+  15:
+    type: TYPE_CUSTOM
+    id1:
+      id: 8
+    subId: 0
+    id2:
+      instance: 0
+    label: Vc
+    unit: 1
+    prec: 2
+    autoOffset: 0
+    filter: 0
+    logs: 1
+    persistent: 0
+    onlyPositive: 0
+    cfg:
+      custom:
+        ratio: 42
+        offset: 5
 modelRegistrationID: "*\x15*\x15!\x03%\x07"
 hatsMode: GLOBAL
 usbJoystickExtMode: 1

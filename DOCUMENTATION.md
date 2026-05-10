@@ -22,27 +22,27 @@ The workspace is strictly divided to ensure the core mathematics remain perfectl
   * Manages ESP32 specifics: WiFi/OTA (`comms_manager`), CRSF decoding (`radio_manager`), PCA9685 PWM (`servo_manager`), INA228 Telemetry (`power_manager`), and Buffered File-System IO (`logger`).
 * **📻 `Radiomaster/` (Transmitter Profiles)**
   * Contains the EdgeTX backup and configuration files specifically tuned for the RadioMaster Pocket. By copying these to the radio's SD card, you can instantly clone the exact control scheme without manual programming.
-  * **`MODELS/`**: Houses the Hexadrone model profile. It pre-configures all 12 channels, including the custom logical switches for the trim-based Leg Selector and the EdgeTX telemetry alarms (e.g., haptic warnings for low voltage).
+  * **`MODELS/`**: Houses the Hexadrone model profile. It pre-configures all 12 channels, including the custom logical switches for the trim-based Leg Selector, telemetry alarms, priority interrupts, and data logging.
   * **`RADIO/`**: Contains the global radio settings, UI layout, and hardware calibrations required to map the physical layout of the Pocket to the Hexadrone's expected inputs.
 
 ## 🕹️ Control Mapping (RadioMaster Pocket / ELRS)
 
 ![alt text](documentation_assets/pocket-switch-layout-873244715.jpg)
 
-| Channel  | Input           | Function            | Logic / Behavior                         |
-| :------- | :-------------- | :------------------ | :--------------------------------------- |
-| **CH1**  | Right Stick (X) | **Body Roll**       | Lean left/right                          |
-| **CH2**  | Right Stick (Y) | **Body Pitch**      | Lean forward/back                        |
-| **CH3**  | Left Stick (Y)  | **Velocity (Gas)**  | Magnitude of the walking gait            |
-| **CH4**  | Left Stick (X)  | **Yaw (Turn)**      | Rotation around the vertical Z-axis      |
-| **CH5**  | Switch SA       | **ARM / Safety**    | High: 1 (Armed) / Low: -1 (Disarmed)     |
-| **CH6**  | Switch SB       | **Standing Height** | 3-Pos: Crouch (-1) / Std (0) / High (1)  |
-| **CH7**  | Switch SC       | **Transmission**    | 3-Pos: Fwd (-1) / Neutral (0) / Bwd (1)  |
-| **CH8**  | Left Trim (Y)   | **Manual Tibia**    | Extension reach for selected leg         |
-| **CH9**  | Button SE       | **Kill-Switch**     | Immediate Hard Software Cutoff           |
-| **CH10** | Left Trim (X)   | **Leg Selector**    | Cycle Legs 1-6 (Rising Edge Detect)      |
-| **CH11** | Right Trim (X)  | **Manual Coxa**     | Horizontal swing for selected leg        |
-| **CH12** | Right Trim (Y)  | **Manual Femur**    | Vertical lift for selected leg           |
+| Channel  | Input           | Function            | Logic / Behavior                        |
+|----------|-----------------|---------------------|-----------------------------------------|
+| **CH1**  | Right Stick (X) | **Body Roll**       | Lean left/right                         |
+| **CH2**  | Right Stick (Y) | **Body Pitch**      | Lean forward/back                       |
+| **CH3**  | Left Stick (Y)  | **Velocity**        | Magnitude of the walking gait           |
+| **CH4**  | Left Stick (X)  | **Yaw**             | Rotation around the Z-axis              |
+| **CH5**  | Switch SA       | **ARM / Safety**    | High: 1 (Armed) / Low: -1 (Disarmed)    |
+| **CH6**  | Switch SB       | **Standing Height** | 3-Pos: Crouch (-1) / Std (0) / High (1) |
+| **CH7**  | Switch SC       | **Transmission**    | 3-Pos: Fwd (-1) / Neutral (0) / Bwd (1) |
+| **CH8**  | Button SE       | **Kill-Switch**     | Immediate Hard Software Cutoff          |
+| **CH9**  | Right Trim (X)  | **Manual Coxa**     | Horizontal swing for selected leg       |
+| **CH10** | Right Trim (Y)  | **Manual Femur**    | Vertical lift for selected leg          |
+| **CH11** | Left Trim (Y)   | **Manual Tibia**    | Extension reach for selected leg        |
+| **CH12** | Left Trim (X)   | **Leg Selector**    | Cycle Legs 1-6 (Rising Edge Detect)     |
 
 ### ROS 2 /joy Topic Index Map in bridge_ops.hpp
 
@@ -110,9 +110,9 @@ The workspace is strictly divided to ensure the core mathematics remain perfectl
 - **Standard Charge:** Use **Balance CHG** mode set to **4.10V**. Set the charge current to **2.00A**.
 - **Storage Mode:** If the drone is grounded for more than a few days, run the **Storage** mode to bring all cells to exactly **3.70V/c**. Leaving Li-ions fully charged degrades their capacity.
 
-| Storage (3.80V/c) | Full Charge (4.10V/c) | Nominal (3.70V/c) | Minimum Safe (3.40V/c) | Dangerously Depleted (3.00V/c) |
-|-------------------|-----------------------|-------------------|------------------------|--------------------------------|
-| **22.80V**        | **24.60V**            | **22.20V**        | **20.40V**             | **18.00V**                     |
+| Storage (3.80V/c) | Full Charge (4.10V/c) | Nominal (3.70V/c) | Minimum Safe (3.3V/c) | Dangerously Depleted (3.00V/c) |
+|-------------------|-----------------------|-------------------|-----------------------|--------------------------------|
+| **22.80V**        | **24.60V**            | **22.20V**        | **19.80V**            | **18.00V**                     |
 
 ### Power Distribution
 
@@ -154,8 +154,8 @@ The **Cyclone ELRS Nano** receiver pushes a high-density telemetry stream to the
 
 | Position  | Left Column                         | Right Column                      |
 |:----------|:------------------------------------|:----------------------------------|
-| **Row 1** | **`Vbat`**: Total Pack Voltage      | **`V/c`**: Average Cell Voltage   |
-| **Row 2** | **`Watt`**: Total Power Consumption | **`mAh`**: Capacity Consumed      |
+| **Row 1** | **`RxBt`**: Total Pack Voltage      | **`Vc`**: Average Cell Voltage    |
+| **Row 2** | **`Watt`**: Total Power Consumption | **`Capa`**: Capacity Consumed     |
 | **Row 3** | **`TPWR`**: Transmitter Power       | **`RSNR`**: Signal-to-Noise Ratio |
 | **Row 4** | **`1RSS`**: Uplink Signal Strength  | **`RQly`**: Link Quality (Health) |
 
@@ -163,28 +163,36 @@ The **Cyclone ELRS Nano** receiver pushes a high-density telemetry stream to the
 
 | Sensor   | Unit | Good / Nominal     | Warning / Bad | Description                                                                 |
 |----------|------|--------------------|---------------|-----------------------------------------------------------------------------|
-| **Vbat** | V    | **22.2V – 24.6V**  | **< 21.0V**   | Main battery voltage. Triggers **Soft Cutoff** landing sequence at 21.0V.   |
-| **V/c**  | V    | **3.70V – 4.10V**  | **< 3.50V**   | Average cell voltage ($Vbat / 6$). Essential for monitoring Li-ion health.  |
-| **Watt** | W    | **3.0W – 140.0W**  | **> 165.0W**  | Total system power. Spikes indicate mechanical stalls or "Extreme Load".    |
-| **mAh**  | mAh  | **0mAh – 3000mAh** | **> 3200mAh** | Total "fuel" gauge. Based on 80% usable capacity of the 4000mAh pack.       |
+| **RxBt** | V    | **22.2V – 24.6V**  | **< 20.4V**   | Main battery voltage. Drops below 19.8V trigger the landing sequence.       |
+| **Vc**   | V    | **3.70V – 4.10V**  | **< 3.40V**   | Average cell voltage ($Vbat / 6$). Essential for monitoring Li-ion health.  |
+| **Watt** | W    | **3.0W – 140.0W**  | **> 150.0W**  | Total system power. Spikes indicate mechanical stalls or "Extreme Load".    |
+| **Capa** | mAh  | **0mAh – 3000mAh** | **> 3200mAh** | Total "fuel" gauge. Based on 80% usable capacity of the 4000mAh pack.       |
 | **TPWR** | mW   | **10mW – 100mW**   | **250mW**     | Current TX output. 250mW indicates the radio is compensating for obstacles. |
 | **RSNR** | dB   | **> 5dB**          | **< -15dB**   | Signal cleanness. Lower values indicate high WiFi noise or interference.    |
 | **1RSS** | dBm  | **-30 to -80**     | **< -105**    | Raw uplink signal strength. -105dBm is the physical limit for the link.     |
 | **RQly** | %    | **100%**           | **< 80%**     | **Critical Metric.** Percentage of packets successfully reaching the drone. |
 
-### 3. Battery Management & Cutoff Logic
+### 3. EdgeTX Radio Integration (RadioMaster Pocket)
+The RadioMaster profile is strictly configured to prioritize critical alarms and manage mission data using EdgeTX Logical and Special functions:
+
+* **Mission Master (Switch SD):**
+  * **Log Start (`SD↓`):** Initiates high-speed SD card telemetry logging (0.1s interval) and starts the persistent mission flight timer (Timer 1).
+  * **Telemetry Reset (`SD↑`):** Performs a global "Reset All" function, zeroing out the flight timer and clearing the capacity (mAh) consumed for a fresh battery swap.
+* **Global Audio Control (Knob S1):** Analog axis S1 is bound globally to the radio's master volume, allowing rapid silencing of alerts during bench testing.
+
+### 4. Battery Management & Cutoff Logic
 To ensure absolute safety, the battery management thresholds are implemented on **both** the ESP32 logic board (for physical execution) and the RadioMaster transmitter (for operator alerts). 
 
 - **Cell Safety:** The Partizan Li-ion pack (10C rating) is capable of 40A continuous discharge. While the drone's average draw is lower (≈5–10A), the BMS is capable of handling 40A peaks.
 - **Telemetry Monitoring:** The Holybro PM02D is used to feed real-time voltage data to the ESP32 via I2C.
 - **Dual-Layer Logic:**
-    - **Warning (< 21.0V | 3.5V/c for 2 seconds):** Triggers audio/haptic feedback on the RadioMaster Pocket. Logged by the ESP32.
-    - **Soft Cutoff (< 20.4V | 3.4V/c for 5 seconds):** Forcibly intercepts the Radio controller's ARM switch on the ESP32 to trigger a graceful landing and alerts the operator.
-    - **Immediate Hard Cutoff (< 18.0V | 3.0V/c):** Instantly triggers the Hardware OE-Kill gate on the ESP32 to prevent catastrophic battery damage and alerts the operator.
-    - **Power Overload (> 165W for 0.5 seconds):** Triggers a unique haptic/audio warning on the RadioMaster to alert the operator of a mechanical jam or excessive weight load. (***TODO: Logged by the ESP32.***)
+    - **Warning (< 20.4V | 3.4V/c for 5.0 seconds):** Triggers `lowbat` audio/haptic feedback on the RadioMaster Pocket. Logged by the ESP32.
+    - **Soft Cutoff / Disarm (< 19.8V | 3.3V/c for 2.0 seconds):** Triggers `disarm` audio, and forcibly intercepts the Radio controller's ARM switch on the ESP32 to trigger a graceful landing.
+    - **Immediate Hard Cutoff (< 18.0V | 3.0V/c for 0.5 seconds):** Triggers `danger` track and maximum haptic. Instantly triggers the Hardware OE-Kill gate on the ESP32 to prevent catastrophic battery damage.
+    - **Power Overload (> 150.0W for 0.5 seconds):** Triggers `warnng` track and a short haptic burst to alert the operator of a mechanical jam, stuck leg, or excessive payload load.
     - **USB Bench Mode (< 6.0V):** If the voltage reads below 6V, the system assumes it is being powered via USB (5V logic rail) without a battery attached. All cutoff logic is bypassed by the ESP32 to allow safe desktop debugging.
 
-### 4. Wireless Debugging & Data Logging (Local Network)
+### 5. Wireless Debugging & Data Logging (Local Network)
 The Hexadrone features a state-aware `CommsManager` and a dual-output `Logger` system designed to balance high-speed radio performance with robust diagnostic capabilities.
 
 * **Radio-Priority WiFi:** To prevent 2.4GHz signal interference, WiFi is strictly suppressed while the drone is `ARMED`. The network stack only initializes upon entering a `DISARMED` state (or an Emergency `OE-KILL` state), allowing the drone to connect cleanly to the local network.
@@ -192,7 +200,7 @@ The Hexadrone features a state-aware `CommsManager` and a dual-output `Logger` s
 * **The Gunslinger Web Terminal:** While `DISARMED`, operators can navigate to `http://hexadrone.local/` (***current bug: ESP32 IP has to be used***) to access the "Maintenance Protocol" UI. From this interface, you can instantly download the system logs, retrieve the power CSV, or wirelessly purge the internal flash storage.
 * **Maintenance & OTA Updates:** The system supports wireless firmware deployment via Arduino OTA.
 
-#### 5. ELRS Receiver "Auto-WiFi" State
+#### 6. ELRS Receiver "Auto-WiFi" State
 To facilitate wireless firmware updates, the Cyclone ELRS receiver is programmed with an automatic timeout.
 * **Behavior:** If the receiver does not establish a link with the RadioMaster Pocket within **60 seconds** of power-on, it enters **Auto-WiFi Mode**.
 * **Visual Indicator:** The receiver LED will begin **blinking rapidly** (Double-blink pattern).

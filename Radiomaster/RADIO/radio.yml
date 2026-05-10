@@ -1,4 +1,4 @@
-checksum: 7597
+checksum: 28923
 manuallyEdited: 0
 timezoneMinutes: 0
 ppmunit: 0
@@ -25,7 +25,7 @@ calib:
       mid: 1063
       spanNeg: 454
       spanPos: 455
-currModel: 5
+currModel: 4
 contrast: 15
 vBatWarn: 66
 txVoltageCalibration: -5
@@ -53,14 +53,14 @@ trainer:
          srcChn: 3
          mode: REPL
          studWeight: 100
-view: 4
+view: 0
 fai: 0
-beepMode: mode_quiet
+beepMode: mode_all
 alarmsFlash: 0
 disableMemoryWarning: 0
 disableAlarmWarning: 0
 stickMode: 1
-timezone: 0
+timezone: 2
 adjustRTC: 0
 inactivityTimer: 10
 internalModuleBaudrate: 5
@@ -76,11 +76,11 @@ hapticStrength: 2
 gpsFormat: 0
 audioMuteEnable: 0
 speakerPitch: 0
-speakerVolume: 24
+speakerVolume: 23
 vBatMin: 64
 vBatMax: 84
-backlightBright: 50
-globalTimer: 6001
+backlightBright: 80
+globalTimer: 172198
 bluetoothBaudrate: 0
 bluetoothMode: OFF
 countryCode: 2
