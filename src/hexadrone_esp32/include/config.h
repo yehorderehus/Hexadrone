@@ -26,16 +26,17 @@ constexpr int LOGICAL_TO_PHYSICAL[6] = {
 // Servo Direction Calibration
 // 1.0f = Normal, -1.0f = Inverted
 // Order: [Coxa, Femur, Tibia] for each leg (0-5)
+// Only change to -1.0f AFTER mechanical alignment if a leg still moves backwards.
 constexpr float SERVO_SIGNS[18] = {
     // Group A (LF, RM, LB)
-    1.0f, -1.0f, 1.0f, // Leg 0 (LF)
-    1.0f, -1.0f, 1.0f, // Leg 1 (RM)
-    1.0f, -1.0f, 1.0f, // Leg 2 (LB)
+    1.0f, 1.0f, 1.0f, // Leg 0 (LF)
+    1.0f, 1.0f, 1.0f, // Leg 1 (RM)
+    1.0f, 1.0f, 1.0f, // Leg 2 (LB)
 
     // Group B (RF, LM, RB)
-    -1.0f, 1.0f, -1.0f, // Leg 3 (RF)
-    -1.0f, 1.0f, -1.0f, // Leg 4 (LM)
-    -1.0f, 1.0f, -1.0f  // Leg 5 (RB)
+    1.0f, 1.0f, 1.0f, // Leg 3 (RF)
+    1.0f, 1.0f, 1.0f, // Leg 4 (LM)
+    1.0f, 1.0f, 1.0f  // Leg 5 (RB)
 };
 
 // I2C Pins

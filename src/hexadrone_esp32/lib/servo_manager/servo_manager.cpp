@@ -35,8 +35,7 @@ void ServoManager::begin()
 
 void ServoManager::update(Hexadrone::DroneState currentState)
 {
-    // Early exit: If hardware is missing or killed, do nothing
-    if (!_pcaPresent || _killed)
+    if (!_pcaPresent)
         return;
 
     // --- Arming/Disarming powering sequence ---
@@ -87,6 +86,7 @@ void ServoManager::update(Hexadrone::DroneState currentState)
 
 void ServoManager::applyAngles(const std::vector<float> &angles)
 {
+    // Safety check: ensure we have a full set of angles and hardware is present
     if (angles.size() != 18 || !_pcaPresent)
         return;
 
@@ -100,21 +100,14 @@ void ServoManager::applyAngles(const std::vector<float> &angles)
         {
             int logical_idx = (logical_leg * 3) + joint;
 
-            // 1. POWER GATE: Prevent fighting during disarm sequence
+            // 1. POWER GATE: Prevent servos from fighting during sequential arm/disarm.
             if (logical_idx >= _currentActive)
                 continue;
 
-            float corrected_angle;
-            if (_currentPosture == Hexadrone::PostureState::POSTURE_PRONE)
-            {
-                corrected_angle = angles[logical_idx] * -SERVO_SIGNS[logical_idx];
-            }
-            else
-            {
-                corrected_angle = angles[logical_idx] * SERVO_SIGNS[logical_idx];
-            }
+            // 2. SIGN AUTHORITY: Trust the Core package implicitly. 
+            float final_deg = angles[logical_idx] * SERVO_SIGNS[logical_idx];
 
-            uint16_t pwm_value = degreesToTicks(corrected_angle);
+            uint16_t pwm_value = degreesToTicks(final_deg);
 
             if (is_board_2)
             {
@@ -159,7 +152,7 @@ void ServoManager::setPostureState(Hexadrone::PostureState posture)
 // --- Helpers ---
 void ServoManager::setRawPWM(int global_servo_idx, int pulse)
 {
-    // Optional Bounds check and Hardware check
+    // Failsafe Bounds check and Hardware check
     if (!_pcaPresent || global_servo_idx < 0 || global_servo_idx >= 18)
         return;
 
