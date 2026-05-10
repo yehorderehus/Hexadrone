@@ -16,7 +16,6 @@ public:
     int8_t getRSSI();
     int getLQ();
 
-    // Public builder method
     Hexadrone::ControllerInput buildInput();
 
     void sendBatteryTelemetry(float voltage, float current, float mah, uint8_t remaining_percent);
@@ -26,7 +25,6 @@ private:
 
     bool _wasConnected = false;
 
-    // Private helpers
     float normalizeStick(int raw);
     int normalize3Pos(int raw);
 

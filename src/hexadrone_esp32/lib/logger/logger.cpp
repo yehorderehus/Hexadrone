@@ -1,6 +1,5 @@
 #include "logger.h"
 
-// Instantiate the global object
 Logger Blackbox;
 
 void Logger::begin()
@@ -12,8 +11,8 @@ void Logger::begin()
         return;
     }
     _fsReady = true;
-    _fileBuffer.reserve(MAX_BUFFER_SIZE + 256);  // Pre-allocate to prevent heap fragmentation
-    _powerBuffer.reserve(MAX_BUFFER_SIZE + 256); // Pre-allocate to prevent heap fragmentation
+    _fileBuffer.reserve(MAX_BUFFER_SIZE + 256);
+    _powerBuffer.reserve(MAX_BUFFER_SIZE + 256);
 
     if (!LittleFS.exists("/system.log"))
     {
@@ -90,12 +89,11 @@ void Logger::flushSystem()
         return;
     }
 
-    // Check actual file size on disk (200 KB limit)
-    if (file.size() > 200000)
+    if (file.size() > MAX_LOG_SIZE)
     {
         file.close();
         LittleFS.remove("/system.log");
-        file = LittleFS.open("/system.log", FILE_WRITE); // Recreate fresh
+        file = LittleFS.open("/system.log", FILE_WRITE);
         if (file)
             file.println("[LOGGER] --- System Log Rotated: Max file size reached ---");
     }
@@ -116,16 +114,15 @@ void Logger::flushPower()
     File file = LittleFS.open("/power.csv", FILE_APPEND);
     if (!file)
     {
-        Serial.println("[LOGGER] Failed to open power.csv for flush");
+        Serial.println("[LOGGER] Failed to open power.csv for flush.");
         return;
     }
 
-    // Check actual file size on disk (200 KB limit)
-    if (file.size() > 200000)
+    if (file.size() > MAX_LOG_SIZE)
     {
         file.close();
         LittleFS.remove("/power.csv");
-        file = LittleFS.open("/power.csv", FILE_WRITE); // Recreate fresh
+        file = LittleFS.open("/power.csv", FILE_WRITE);
         if (file)
             file.println("Timestamp,AvgCell(V),Voltage(V),Current(A),Power(W),Capacity(mAh)");
     }
@@ -147,8 +144,6 @@ void Logger::wipeLog()
     LittleFS.remove("/power.csv");
     _fileBuffer.clear();
     _powerBuffer.clear();
-    _flushCount = 0;
-    _powerFlushCount = 0;
 
     // 1. Immediately recreate system.log with a header to prevent 0-byte errors
     File sysFile = LittleFS.open("/system.log", FILE_WRITE);

@@ -2,13 +2,13 @@
 
 void RadioManager::begin()
 {
-    // Manually set a much larger RX buffer (2KB) before calling begin
-    Serial2.setRxBufferSize(2048);
+    // Manually set a much larger RX buffer before calling begin
+    Serial2.setRxBufferSize(RADIO_RX_BUF_SIZE);
 
     Serial2.begin(RADIO_BAUD, SERIAL_8N1, CRSF_RX_PIN, CRSF_TX_PIN);
     _crsf.begin(Serial2);
 
-    Blackbox.logSystem("[RADIO] UART Port Open. Buffer expanded to 2KB.");
+    Blackbox.logSystem("[RADIO] UART Port Open. Buffer: %d bytes.", RADIO_RX_BUF_SIZE);
 }
 
 void RadioManager::update()
@@ -22,14 +22,14 @@ void RadioManager::update()
     if (!currentlyConnected)
     {
         static uint32_t lastFlush = 0;
-        if (millis() - lastFlush > 500)
-        { // Every 500ms while disconnected
+        if (millis() - lastFlush > RADIO_FLUSH_INTERVAL)
+        {
+            lastFlush = millis();
             while (Serial2.available() > 0)
             {
                 Serial2.read(); // Clear the junk
             }
-            lastFlush = millis();
-        }
+                }
     }
 
     if (currentlyConnected && !_wasConnected)
@@ -78,10 +78,28 @@ int RadioManager::getLQ()
 
 // --- Radio translation ---
 
-// Normalize a raw CRSF channel value [988, 2012] to [-1.0, 1.0]
-float RadioManager::normalizeStick(int raw)
+// Normalize a raw channel value to -1.0 / 0.0 / +1.0
+float RadioManager::normalizeStick(int raw_pwm)
 {
-    return (raw - 1500) / 512.0f;
+    // 1. Apply a deadband around the 1500 center.
+    // If the stick is within +/- 15 microseconds of center, clamp to 0.0f.
+    if (abs(raw_pwm - 1500) < 15)
+    {
+        return 0.0f;
+    }
+
+    // 2. Normalize the remaining signal (-1.0 to 1.0)
+    // Calculate based on the original range so max deflection remains 1.0
+    float normalized = (float)(raw_pwm - 1500) / 500.0f;
+
+    // Optional but recommended: Clamp to exactly [-1.0, 1.0] in case
+    // the radio throws a value slightly outside the 1000-2000 range.
+    if (normalized > 1.0f)
+        return 1.0f;
+    if (normalized < -1.0f)
+        return -1.0f;
+
+    return normalized;
 }
 
 // Normalize a 3-position switch channel to -1 / 0 / +1
@@ -110,15 +128,15 @@ Hexadrone::ControllerInput RadioManager::buildInput()
     ci.armed_switch = (getChannel(5) > 1500) ? 1 : -1; // CH5 (SA)
     ci.posture_switch = normalize3Pos(getChannel(6));  // CH6 (SB)
     ci.gear_switch = normalize3Pos(getChannel(7));     // CH7 (SC)
-    ci.oe_kill_button = getChannel(9) > 1500;          // CH9 (SE)
+    ci.oe_kill_button = getChannel(8) > 1500;          // CH8 (SE)
 
     // 3. Manual Trims ([-1.0, 1.0] for fine-tuning)
-    ci.trim_coxa = normalizeStick(getChannel(11));  // CH11
-    ci.trim_femur = normalizeStick(getChannel(12)); // CH12
-    ci.trim_tibia = normalizeStick(getChannel(8));  // CH13
+    ci.trim_coxa = normalizeStick(getChannel(9));   // CH9
+    ci.trim_femur = normalizeStick(getChannel(10)); // CH10
+    ci.trim_tibia = normalizeStick(getChannel(11)); // CH11
 
     // 4. Leg Selector (Digital Trim Mapping)
-    int raw_selector = getChannel(10);
+    int raw_selector = getChannel(12);       // CH12
     ci.btn_prev_leg = (raw_selector < 1300); // Left push
     ci.btn_next_leg = (raw_selector > 1700); // Right push
 

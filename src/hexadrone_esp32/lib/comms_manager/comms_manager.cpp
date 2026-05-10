@@ -94,30 +94,38 @@ void CommsManager::begin(const char *ssid, const char *password)
 
 void CommsManager::update(Hexadrone::DroneState currentState)
 {
-    // 1. STATE MACHINE ALERTS
+    static unsigned long lastToggleTime = 0;
+    const unsigned long SETTLE_INTERVAL = 2000; // 2 seconds safety window
 
-    // Emergency Override
-    if (currentState == Hexadrone::DroneState::DRONE_OE_KILLED)
+    // 1. STATE MACHINE ALERTS
+    if (currentState != _lastDroneState && (millis() - lastToggleTime > SETTLE_INTERVAL))
     {
-        if (!_wifiEnabled)
+        lastToggleTime = millis();
+
+        // Emergency Override
+        if (currentState == Hexadrone::DroneState::DRONE_OE_KILLED)
         {
-            Blackbox.logSystem("[COMMS] OE-KILL detected: Enabling WiFi for emergency diagnostics.");
-            enableWiFi(_ssid.c_str(), _password.c_str());
+            if (!_wifiEnabled)
+            {
+                Blackbox.logSystem("[COMMS] OE-KILL detected: Enabling WiFi for emergency diagnostics.");
+                enableWiFi(_ssid.c_str(), _password.c_str());
+            }
         }
-        _lastDroneState = currentState;
-    }
-    // Normal State Changes
-    else if (currentState != _lastDroneState)
-    {
-        if (currentState == Hexadrone::DroneState::DRONE_ARMED)
+        // Normal State Changes
+        else
         {
-            Blackbox.logSystem("[COMMS] System ARMED: Suppressing WiFi for Radio performance.");
-            disableWiFi();
-        }
-        else if (currentState == Hexadrone::DroneState::DRONE_DISARMED)
-        {
-            Blackbox.logSystem("[COMMS] System DISARMED: Booting WiFi for Diagnostics.");
-            enableWiFi(_ssid.c_str(), _password.c_str());
+            if (currentState == Hexadrone::DroneState::DRONE_ARMED)
+            {
+                Blackbox.logSystem("[COMMS] System ARMED: Suppressing WiFi for Radio performance.");
+                disableWiFi();
+            }
+            else if (currentState == Hexadrone::DroneState::DRONE_DISARMED)
+            {
+                Blackbox.logSystem("[COMMS] System DISARMED: Booting WiFi for Diagnostics.");
+                enableWiFi(_ssid.c_str(), _password.c_str());
+                Blackbox.flushSystem();
+                Blackbox.flushPower();
+            }
         }
         _lastDroneState = currentState;
     }

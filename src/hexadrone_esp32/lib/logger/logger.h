@@ -28,12 +28,8 @@ private:
 
     String _fileBuffer;
     String _powerBuffer;
-    const unsigned int MAX_BUFFER_SIZE = BLACKBOX_BUFFER_SIZE; // Write to flash every ~1KB
-
-    unsigned int _flushCount = 0;
-    unsigned int _powerFlushCount = 0;
-    const unsigned int MAX_FLUSHES = BLACKBOX_MAX_FLUSHES; // Wipe/Rotate file after n writes
+    const unsigned int MAX_BUFFER_SIZE = BLACKBOX_BUFFER_SIZE;
+    const unsigned int MAX_LOG_SIZE = BLACKBOX_MAX_LOG_SIZE;
 };
 
-// Expose a global instance so all files can use it without passing references
 extern Logger Blackbox;
