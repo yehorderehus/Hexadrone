@@ -15,28 +15,27 @@
 // Board 2 (0x41): Block 4 (Pins 0-2), Block 5 (Pins 4-6), Block 6 (Pins 8-10), Block 7 (Pins 12-14)
 
 constexpr int LOGICAL_TO_PHYSICAL[6] = {
-    1, // Logical 0 (LF) -> Board 1 (0x40), Pins 4-6   (Block 1)
-    0, // Logical 1 (RM) -> Board 1 (0x40), Pins 0-2   (Block 0)
-    4, // Logical 2 (LB) -> Board 2 (0x41), Pins 0-2   (Block 4)
-    5, // Logical 3 (RF) -> Board 2 (0x41), Pins 4-6   (Block 5)
-    6, // Logical 4 (LM) -> Board 2 (0x41), Pins 8-10  (Block 6)
-    7  // Logical 5 (RB) -> Board 2 (0x41), Pins 12-14 (Block 7)
+    5, // Logical 0 (LF) -> Board 2, Block 1 (Pins 4-6)
+    6, // Logical 1 (RM) -> Board 2, Block 2 (Pins 8-10)
+    7, // Logical 2 (LB) -> Board 2, Block 3 (Pins 12-14)
+    0, // Logical 3 (RF) -> Board 1, Block 0 (Pins 0-2)
+    1, // Logical 4 (LM) -> Board 1, Block 1 (Pins 4-6)
+    4  // Logical 5 (RB) -> Board 2, Block 0 (Pins 0-2)
 };
 
-// Servo Direction Calibration
+// --- Servo Direction Calibration ---
 // 1.0f = Normal, -1.0f = Inverted
 // Order: [Coxa, Femur, Tibia] for each leg (0-5)
-// Only change to -1.0f AFTER mechanical alignment if a leg still moves backwards.
 constexpr float SERVO_SIGNS[18] = {
     // Group A (LF, RM, LB)
-    1.0f, 1.0f, 1.0f, // Leg 0 (LF)
-    1.0f, 1.0f, 1.0f, // Leg 1 (RM)
-    1.0f, 1.0f, 1.0f, // Leg 2 (LB)
+    1.0f, 1.0f, -1.0f, // Leg 0 (LF)
+    1.0f, 1.0f, -1.0f, // Leg 1 (RM)
+    1.0f, 1.0f, -1.0f, // Leg 2 (LB)
 
     // Group B (RF, LM, RB)
-    1.0f, 1.0f, 1.0f, // Leg 3 (RF)
-    1.0f, 1.0f, 1.0f, // Leg 4 (LM)
-    1.0f, 1.0f, 1.0f  // Leg 5 (RB)
+    1.0f, -1.0f, 1.0f, // Leg 3 (RF)
+    1.0f, -1.0f, 1.0f, // Leg 4 (LM)
+    1.0f, -1.0f, 1.0f  // Leg 5 (RB)
 };
 
 // I2C Pins

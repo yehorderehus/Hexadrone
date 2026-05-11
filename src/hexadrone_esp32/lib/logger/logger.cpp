@@ -89,7 +89,8 @@ void Logger::flushSystem()
         return;
     }
 
-    if (file.size() > MAX_LOG_SIZE)
+    size_t currentSize = file.size();
+    if (currentSize > MAX_LOG_SIZE)
     {
         file.close();
         LittleFS.remove("/system.log");
@@ -118,7 +119,8 @@ void Logger::flushPower()
         return;
     }
 
-    if (file.size() > MAX_LOG_SIZE)
+    size_t currentSize = file.size();
+    if (currentSize > MAX_LOG_SIZE)
     {
         file.close();
         LittleFS.remove("/power.csv");

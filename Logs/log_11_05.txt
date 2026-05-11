@@ -1,0 +1,16 @@
+[LOGGER] --- Log Reset: All previous data purged ---
+[00:00:00.043] [LOGGER] LittleFS Mounted. Blackbox active.
+[00:00:00.053] [POWER] INA228 Initialized.
+[00:00:00.054] [RADIO] UART Port Open. Buffer: 2048 bytes.
+[00:00:00.094] [SERVOS] 2x PCA9685 Initialized Successfully.
+[00:00:00.094] [SYSTEM] Hexadrone Initialized.
+[00:00:00.094] [RADIO] Connection Acquired.
+[00:00:02.001] [COMMS] System DISARMED: Booting WiFi for Diagnostics.
+[00:00:02.001] [COMMS] Initializing WiFi for norusko...
+[00:00:04.093] [COMMS] System ARMED: Suppressing WiFi for Radio performance.
+[00:00:04.127] [COMMS] WiFi Disabled (Radio Safe Mode).
+[00:00:04.127] [SERVOS] System ARMED: Powering up.
+[00:05:38.610] [COMMS] System DISARMED: Booting WiFi for Diagnostics.
+[00:05:38.610] [COMMS] Initializing WiFi for norusko...
+[00:05:38.722] [SERVOS] DISARMED: Lowering to prone...
+[00:05:40.723] [SERVOS] Prone posture complete. De-energizing.
