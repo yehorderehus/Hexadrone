@@ -4,7 +4,7 @@ clear;      % Clears all variables from the workspace
 clc;        % Clears the command window
 
 % --- 1. Load the data ---
-data = readtable('power_27_04.csv', 'VariableNamingRule', 'preserve');
+data = readtable('power_11_05.csv', 'VariableNamingRule', 'preserve');
 
 % --- 2. Process the Timestamp ---
 cleanTimeStr = erase(data.Timestamp, ["[", "]"]);
@@ -92,4 +92,4 @@ ylim([min(cData)-50, max(cData)+100]);
 
 % --- 5. Final Formatting ---
 linkaxes([ax1, ax2, ax3, ax4], 'x');
-sgtitle('Hexadrone 4kg test - Power Analysis');
+sgtitle('Hexadrone 3.4kg test - Power Analysis');

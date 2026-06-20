@@ -1,5 +1,7 @@
 # 🤖 Hexadrone
 
+[▶️ Video Demonstration](https://www.youtube.com/watch?v=5gf2d8lJZK4)
+
 A versatile, ROS 2 and ESP32 compatible software stack for a 18-DOF hexapod robot (drone). This repository contains the unified C++ brain, kinematics engine, Webots simulation environment, and the physical PlatformIO hardware layer.
 
 📖 **For full hardware specifications, control mappings, architecture details, and system logic, please read the [Documentation](DOCUMENTATION.md).**

@@ -1,5 +1,4 @@
 # 🤖 M1A1-GUNSLINGER
-> **System Class:** Tactical Hexadrone (V1.0)
 
 ## 🏗️ Project Architecture
 
@@ -124,7 +123,6 @@ The workspace is strictly divided to ensure the core mathematics remain perfectl
 
 | **Scenario**     | **Mode Description**         | **Current/Servo** | **Total Power** | **Runtime** | **HH:MM** |
 |------------------|------------------------------|-------------------|-----------------|-------------|-----------|
-| **Prone/Rest**   | Electronics on, legs relaxed | 0.05A             | 9.7W            | 438 min     | 07:18     |
 | **Standing**     | Holding 4kg (Quiescent)      | 0.20A             | 29.9W           | 142 min     | 02:22     |
 | **Observed Avg** | Real mission profile         | 0.36A             | 51.5W           | 83 min      | 01:23     |
 | **Active Gait**  | Smooth locomotion            | 0.60A             | 83.8W           | 51 min      | 00:51     |
