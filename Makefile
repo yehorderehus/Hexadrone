@@ -1,4 +1,4 @@
-.PHONY: up shell build run stop deploy posture-prone posture-standard posture-crouch posture-high high-twist walk-alpha walk-beta
+.PHONY: up shell build run run-keyboard stop deploy posture-prone posture-standard posture-crouch posture-high high-twist walk-alpha walk-beta
 
 # Core Container Commands
 up:
@@ -9,11 +9,15 @@ shell: up
 
 build:
 	podman exec jazzy_webots_sim bash -c "source /opt/ros/jazzy/setup.bash && \
-	colcon build --symlink-install --packages-select hexadrone_core hexadrone_controller"
+	colcon build --symlink-install --packages-select hexadrone_core hexadrone_controller hexadrone_webots"
 
 run:
 	podman exec -it jazzy_webots_sim bash -c "source install/setup.bash && \
 	ros2 launch hexadrone_webots launch.py"
+
+run-keyboard:
+	podman exec -it jazzy_webots_sim bash -c "source install/setup.bash && \
+	ros2 launch hexadrone_webots launch.py use_joystick:=false"
 
 stop:
 	podman-compose down -t0

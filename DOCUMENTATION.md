@@ -43,25 +43,6 @@ The workspace is strictly divided to ensure the core mathematics remain perfectl
 | **CH11** | Left Trim (Y)   | **Manual Tibia**    | Extension reach for selected leg        |
 | **CH12** | Left Trim (X)   | **Leg Selector**    | Cycle Legs 1-6 (Rising Edge Detect)     |
 
-### ROS 2 /joy Topic Index Map in bridge_ops.hpp
-
-| Index Type  | Index      | Physical Control | Range / Logic (In C++)                        |
-|-------------|------------|------------------|-----------------------------------------------|
-| **Axes**    | `[0]`      | Right Stick (X)  | -1.0 (Right) to 1.0 (Left) [Inverted]         |
-| **Axes**    | `[1]`      | Right Stick (Y)  | -1.0 (Down) to 1.0 (Up) [Inverted]            |
-| **Axes**    | `[2]`      | Left Stick (Y)   | -1.0 (Down) to 1.0 (Up) [Inverted]            |
-| **Axes**    | `[3]`      | Left Stick (X)   | -1.0 (Right) to 1.0 (Left) [Inverted]         |
-| **Axes**    | `[4]`      | Switch SB        | -1.0 (Up) / 0.0 (Mid) / 1.0 (Down) [Inverted] |
-| **Axes**    | `[5]`      | Knob S1          | -1.0 (Right) to 1.0 (Left) [Inverted]         |
-| **Buttons** | `[0]`      | Switch SA        | 0 (Low) / 1 (High)                            |
-| **Buttons** | `[1]`      | Button SE        | 0 (Off) / 1 (On)                              |
-| **Buttons** | `[2]`      | Switch SD        | 0 (Low) / 1 (High)                            |
-| **Buttons** | `[3, 4]`   | Right Trim (X)   | 3: -1 (Left) / 4: 1 (Right)                   |
-| **Buttons** | `[5, 6]`   | Right Trim (Y)   | 5: -1 (Down) / 6: 1 (Up)                      |
-| **Buttons** | `[7, 8]`   | Left Trim (Y)    | 7: -1 (Down) / 8: 1 (Up)                      |
-| **Buttons** | `[9, 10]`  | Left Trim (X)    | 9: Prev Leg / 10: Next Leg                    |
-| **Buttons** | `[11, 12]` | Switch SC        | 11: Forward (-1) / 12: Backward (1)           |
-
 ---
 
 ### ⚙️ System Logic

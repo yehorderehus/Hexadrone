@@ -1,7 +1,10 @@
 import os
 import launch
 from launch import LaunchDescription
+from launch.actions import DeclareLaunchArgument
+from launch.conditions import IfCondition
 from launch_ros.actions import Node
+from launch.substitutions import LaunchConfiguration
 from ament_index_python.packages import get_package_share_directory
 from webots_ros2_driver.webots_launcher import WebotsLauncher, Ros2SupervisorLauncher
 from webots_ros2_driver.webots_controller import WebotsController
@@ -58,6 +61,7 @@ def generate_launch_description():
         package='joy',
         executable='joy_node',
         name='joy_node',
+        condition=IfCondition(LaunchConfiguration('use_joystick')),
         parameters=[{
             'dev': '/dev/input/js0',  # Change js0 (Joystick device) if differs on your machine, in compose.yaml as well
             'deadzone': 0.05
@@ -65,6 +69,11 @@ def generate_launch_description():
     )
 
     return LaunchDescription([
+        DeclareLaunchArgument(
+            'use_joystick',
+            default_value='true',
+            description='Start joy_node for a connected physical joystick.',
+        ),
         webots,
         ros2_supervisor,
         robot_driver,

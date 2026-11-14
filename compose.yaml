@@ -9,6 +9,7 @@ services:
     stdin_open: true
     tty: true
     environment:
+      - USER=root
       - DISPLAY=${DISPLAY}
       - QT_X11_NO_MITSHM=1
       - NVIDIA_VISIBLE_DEVICES=all
@@ -21,8 +22,9 @@ services:
       - /root/hexadrone_ws/build
       - /root/hexadrone_ws/install
       - ./.container_fish_history:/root/.local/share/fish/fish_history:rw
-    devices:
-      - /dev/input/js0:/dev/input/js0:rw  # Change js0 (Joystick device) if differs on your machine, in launch.py as well
+      - /dev/input:/dev/input:rw
+    # devices:
+    #   - /dev/input/js0:/dev/input/js0:rw  # Rename/Comment out js0 (Joystick device) if differs/not plugged on your machine, rename in launch.py as well
     group_add:
       - keep-groups
     device_requests:
